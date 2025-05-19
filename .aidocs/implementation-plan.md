@@ -20,7 +20,7 @@ This document outlines the step-by-step plan for developing the Copilot Task Man
    - *Prompt*: "Copilot, create a comprehensive .gitignore file for a Python project."
    - *Verification*: .gitignore file exists with appropriate Python-related entries.
 
-4. [ ] **Setup basic project structure**
+4. [X] **Setup basic project structure**
    - *Prompt*: "Copilot, create the basic directory structure for a Python MCP project following best practices."
    - *Verification*: Project directories created (src, tests, docs, etc.)
 
