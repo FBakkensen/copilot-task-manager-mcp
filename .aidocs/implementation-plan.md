@@ -16,7 +16,7 @@ This document outlines the step-by-step plan for developing the Copilot Task Man
    - *Verification*: Terminal shows virtual environment is active (environment name in prompt).
    - *Command*: `.\.venv\Scripts\activate`
 
-3. [ ] **Setup .gitignore file**
+3. [X] **Setup .gitignore file**
    - *Prompt*: "Copilot, create a comprehensive .gitignore file for a Python project."
    - *Verification*: .gitignore file exists with appropriate Python-related entries.
 
