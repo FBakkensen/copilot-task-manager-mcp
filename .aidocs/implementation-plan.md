@@ -26,11 +26,11 @@ This document outlines the step-by-step plan for developing the Copilot Task Man
 
 ### Initial Package Configuration
 
-5. [ ] **Create pyproject.toml file**
+5. [X] **Create pyproject.toml file**
    - *Prompt*: "Copilot, create a pyproject.toml file with poetry for dependency management."
    - *Verification*: pyproject.toml exists with project metadata and basic dependencies.
 
-6. [ ] **Install development dependencies**
+6. [X] **Install development dependencies**
    - *Prompt*: "Copilot, install development dependencies for testing, linting, and formatting."
    - *Verification*: Dependencies installed and available in virtual environment.
    - *Dependencies*: pytest, pytest-cov, black, isort, flake8, mypy
