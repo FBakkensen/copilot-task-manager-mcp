@@ -1,1 +1,1 @@
-# Integration tests package
+"""Integration tests for the copilot_task_manager package."""

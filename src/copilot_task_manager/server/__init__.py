@@ -1,3 +1,1 @@
-"""
-Model Context Protocol server implementation.
-"""
+"""Initialize the server package."""

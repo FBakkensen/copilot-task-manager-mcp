@@ -55,7 +55,7 @@ This document outlines the step-by-step plan for developing the Copilot Task Man
      - *When* the server module is created
      - *Then* it should have the basic structure required by the MCP specification
 
-10. [ ] **Write tests for MCP server initialization**
+10. [X] **Write tests for MCP server initialization**
     - *Prompt*: "Copilot, write tests for MCP server initialization."
     - *Verification*: Tests exist and can be run, though may fail initially.
     - *BDD*:

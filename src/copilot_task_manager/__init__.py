@@ -1,5 +1,3 @@
-"""
-Copilot Task Manager MCP - A Model Context Protocol server for task management.
-"""
+"""Initialize the copilot_task_manager package."""
 
-__version__ = "0.1.0"
+__version__ = '0.1.0'

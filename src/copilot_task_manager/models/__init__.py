@@ -1,3 +1,1 @@
-"""
-Data models for task management.
-"""
+"""Initialize the models package."""
