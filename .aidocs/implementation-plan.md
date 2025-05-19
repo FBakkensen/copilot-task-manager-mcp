@@ -35,7 +35,7 @@ This document outlines the step-by-step plan for developing the Copilot Task Man
    - *Verification*: Dependencies installed and available in virtual environment.
    - *Dependencies*: pytest, pytest-cov, black, isort, flake8, mypy
 
-7. [ ] **Configure pytest**
+7. [X] **Configure pytest**
    - *Prompt*: "Copilot, create a pytest configuration file with common best practices."
    - *Verification*: pytest.ini or conftest.py exists with appropriate configuration.
 
