@@ -6,12 +6,12 @@ This document outlines the step-by-step plan for developing the Copilot Task Man
 
 ### Environment Setup
 
-1. [ ] **Create Python virtual environment**
+1. [X] **Create Python virtual environment**
    - *Prompt*: "Copilot, please create a Python virtual environment for my project using venv."
    - *Verification*: Virtual environment directory exists and can be activated.
    - *Command*: `python -m venv .venv`
 
-2. [ ] **Activate virtual environment**
+2. [X] **Activate virtual environment**
    - *Prompt*: "Copilot, show me how to activate the virtual environment on Windows."
    - *Verification*: Terminal shows virtual environment is active (environment name in prompt).
    - *Command*: `.\.venv\Scripts\activate`
