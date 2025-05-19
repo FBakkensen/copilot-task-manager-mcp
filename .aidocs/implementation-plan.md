@@ -39,7 +39,7 @@ This document outlines the step-by-step plan for developing the Copilot Task Man
    - *Prompt*: "Copilot, create a pytest configuration file with common best practices."
    - *Verification*: pytest.ini or conftest.py exists with appropriate configuration.
 
-8. [ ] **Setup pre-commit hooks**
+8. [X] **Setup pre-commit hooks**
    - *Prompt*: "Copilot, set up pre-commit hooks for code quality checks."
    - *Verification*: .pre-commit-config.yaml file exists with hooks for linting and formatting.
 
