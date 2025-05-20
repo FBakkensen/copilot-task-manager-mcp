@@ -1,5 +1,7 @@
 """Tests for the MCP server initialization."""
 
+import typing
+
 import pytest
 from fastmcp import FastMCP
 
@@ -58,14 +60,125 @@ class TestMCPServerCreation:
         assert server.server_name == custom_name
 
 
+class TestMCPServerErrorHandling:
+    """Test suite for MCP server error handling.
+
+    Following BDD style:
+    - Given invalid server configuration
+    - When attempting server operations
+    - Then appropriate errors should be raised
+    """
+
+    @pytest.mark.parametrize(
+        'name',
+        ['', ' ', None, typing.cast(str, {})],  # type: ignore
+    )
+    def test_create_server_with_invalid_name(self, name: typing.Any) -> None:
+        """Test server creation with invalid name.
+
+        Given an invalid server name
+        When attempting to create a server
+        Then it should raise a ValueError
+        """
+        with pytest.raises(
+            ValueError,
+            match='Server name must be a non-empty string',
+        ):
+            create_server(typing.cast(str, name))
+
+    @pytest.mark.parametrize(
+        'port',
+        [-1, 0, 65536, None, 'invalid'],  # type: ignore
+    )
+    def test_server_with_invalid_port(self, port: typing.Any) -> None:
+        """Test port validation.
+
+        Given invalid port values
+        When attempting to set the port
+        Then it should raise a ValueError
+        """
+        # Given
+        server = create_server()
+
+        # When/Then
+        with pytest.raises(
+            ValueError,
+            match='Port must be between 1 and 65535',
+        ):
+            server.port = port
+
+
 class TestMCPServerConfiguration:
     """Test suite for MCP server configuration.
 
     Following BDD style:
     - Given a newly created MCP server
     - When checking its configuration
-    - Then it should have the expected components initialized
+    - Then it should have the expected settings
     """
+
+    def test_server_default_configuration(
+        self,
+        server: TaskManagerMCPServer,
+    ) -> None:
+        """Test server default configuration values.
+
+        Given a newly created MCP server
+        When checking its configuration
+        Then it should have the expected default values
+        """
+        # Then
+        assert server.port == 3000  # Default MCP port
+        assert server.host == 'localhost'  # Default host
+        assert not server.debug  # Debug mode should be off by default
+
+    def test_server_custom_configuration(self) -> None:
+        """Test server with custom configuration.
+
+        Given custom configuration values
+        When creating a server with those values
+        Then it should use the custom configuration
+        """
+        # Given
+        server = create_server(
+            'CustomServer',
+            port=3001,
+            host='127.0.0.1',
+            debug=True,
+        )
+
+        # Then
+        assert server.server_name == 'CustomServer'
+        assert server.port == 3001
+        assert server.host == '127.0.0.1'
+        assert server.debug is True
+
+    @pytest.mark.asyncio
+    async def test_server_runtime_configuration_changes(
+        self,
+        server: TaskManagerMCPServer,
+    ) -> None:
+        """Test server configuration changes at runtime.
+
+        Given a running server
+        When changing configuration at runtime
+        Then it should handle changes appropriately
+        """
+        # Given
+        await server.start()
+
+        # When/Then - Should not allow port change while running
+        with pytest.raises(
+            RuntimeError,
+            match='Cannot change port while server is running',
+        ):
+            server.port = 3001
+
+        await server.stop()
+
+        # When/Then - Should allow port change when stopped
+        server.port = 3001
+        assert server.port == 3001
 
     def test_server_has_mcp_instance_initialized(
         self,
@@ -97,7 +210,8 @@ class TestMCPServerConfiguration:
         assert callable(server._setup_tools)
 
     def test_setup_tools_is_called_during_initialization(
-        self, mocker: pytest.MonkeyPatch
+        self,
+        mocker: pytest.MonkeyPatch,
     ) -> None:
         """Test that _setup_tools is called during initialization.
 
@@ -107,7 +221,9 @@ class TestMCPServerConfiguration:
         """
         # Given
         mock_setup_tools = mocker.patch.object(
-            TaskManagerMCPServer, '_setup_tools', autospec=True
+            TaskManagerMCPServer,
+            '_setup_tools',
+            autospec=True,
         )
 
         # When
