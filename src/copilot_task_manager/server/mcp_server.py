@@ -44,7 +44,7 @@ class TaskManagerMCPServer:
         self._debug = debug
         self._is_running = False
         self.mcp = FastMCP(server_name)
-        self._server_task: Optional[asyncio.Task] = None
+        self._server_task: Optional[asyncio.Task[None]] = None
         self._setup_tools()
 
     @staticmethod

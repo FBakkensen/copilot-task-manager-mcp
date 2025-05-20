@@ -73,7 +73,7 @@ This document outlines the step-by-step plan for developing the Copilot Task Man
 
 ### Task Manager Core
 
-12. [ ] **Define Task Manager data models**
+12. [X] **Define Task Manager data models**
     - *Prompt*: "Copilot, create data models for tasks in our task manager."
     - *Verification*: Task model classes exist with appropriate attributes and methods.
     - *BDD*:

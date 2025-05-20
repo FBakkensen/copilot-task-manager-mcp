@@ -1,5 +1,5 @@
 ---
-applyTo: '**/*.py'
+applyTo: '**'
 ---
 Always refer to the documentation in the folder .aidocs/ for the implementation plan and the API specifications. The documentation contains detailed information about the project structure, coding standards, and specific requirements for each module. Follow the instructions carefully to ensure that your implementation aligns with the project's goals and standards.
 
