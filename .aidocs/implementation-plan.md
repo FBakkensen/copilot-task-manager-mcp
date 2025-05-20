@@ -81,7 +81,7 @@ This document outlines the step-by-step plan for developing the Copilot Task Man
       - *When* data models are defined
       - *Then* they should represent tasks with appropriate attributes
 
-13. [ ] **Write tests for Task CRUD operations**
+13. [X] **Write tests for Task CRUD operations**
     - *Prompt*: "Copilot, write tests for task creation, reading, updating, and deletion operations."
     - *Verification*: Tests for CRUD operations exist.
     - *BDD*:
