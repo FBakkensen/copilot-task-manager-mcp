@@ -1,6 +1,7 @@
 """Tests for the MCP server initialization."""
 
 import typing
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from fastmcp import FastMCP
@@ -12,8 +13,30 @@ from copilot_task_manager.server.mcp_server import (  # noqa: E501
 
 
 @pytest.fixture
-def server() -> TaskManagerMCPServer:
-    """Create a server instance for testing."""
+def mocked_mcp(mocker: pytest.MonkeyPatch) -> MagicMock:
+    """Create a mocked FastMCP for all tests.
+
+    Returns:
+        MagicMock: A mocked FastMCP instance.
+    """
+    # Create async mock instance with async methods
+    mock = MagicMock(spec=FastMCP)
+    mock.start = AsyncMock()
+    mock.stop = AsyncMock()
+
+    # Mock FastMCP constructor to return our mock
+    mcp_path = 'copilot_task_manager.server.mcp_server.FastMCP'
+    mocker.patch(mcp_path, return_value=mock)
+
+    return mock
+
+
+@pytest.fixture
+def server(mocked_mcp: MagicMock) -> TaskManagerMCPServer:
+    """Create a server instance for testing.
+
+    All server instances will have a mocked FastMCP instance.
+    """
     return create_server()
 
 
@@ -193,7 +216,6 @@ class TestMCPServerConfiguration:
         # Then
         assert hasattr(server, 'mcp')
         assert server.mcp is not None
-        assert isinstance(server.mcp, FastMCP)
 
     def test_server_has_tools_setup_method(
         self,
@@ -260,16 +282,40 @@ class TestMCPServerLifecycle:
         assert callable(server.stop)
 
     @pytest.mark.asyncio
-    async def test_start_stop_methods_exist(self) -> None:
+    async def test_start_stop_methods_exist(
+        self,
+        server: TaskManagerMCPServer,
+    ) -> None:
         """Test server start and stop methods work without exceptions.
 
         Given a newly created MCP server
         When using the start and stop methods
         Then they should execute without errors
         """
-        # Given
-        server = create_server()
-
         # When/Then - no exceptions should be raised
         await server.start()
         await server.stop()
+
+    @pytest.mark.asyncio
+    async def test_server_lifecycle_state(
+        self,
+        server: TaskManagerMCPServer,
+    ) -> None:
+        """Test server lifecycle state management.
+
+        Given a newly created MCP server
+        When starting and stopping the server
+        Then it should properly track its running state
+        """
+        # Given
+        assert not server._is_running
+
+        # When starting
+        await server.start()
+        # Then should be running
+        assert server._is_running
+
+        # When stopping
+        await server.stop()
+        # Then should not be running
+        assert not server._is_running

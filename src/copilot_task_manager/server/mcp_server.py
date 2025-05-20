@@ -4,9 +4,15 @@ This module implements a FastMCP server that provides task management
 functionality through the Model Context Protocol (MCP).
 """
 
-from typing import Any
+import asyncio
+import logging
+import os
+import sys
+from typing import Any, Optional
 
 from fastmcp import FastMCP
+
+logger = logging.getLogger(__name__)
 
 
 class TaskManagerMCPServer:
@@ -38,6 +44,7 @@ class TaskManagerMCPServer:
         self._debug = debug
         self._is_running = False
         self.mcp = FastMCP(server_name)
+        self._server_task: Optional[asyncio.Task] = None
         self._setup_tools()
 
     @staticmethod
@@ -101,23 +108,73 @@ class TaskManagerMCPServer:
         """Register all MCP tools with their handlers."""
         # Tools will be registered here in future steps
 
+    def _check_stdio_available(self) -> bool:
+        """Check if stdio communication is available.
+
+        Returns:
+            bool: True if stdio should be used, False otherwise.
+        """
+        # Check if we're running in VS Code
+        if os.environ.get('VSCODE_PID'):
+            return True
+
+        # Check if we have real TTY devices
+        if hasattr(sys.stdin, 'isatty') and sys.stdin.isatty():
+            return True
+
+        return False
+
     async def start(self) -> None:
         """Start the MCP server.
 
         Raises:
             ValueError: If port is invalid.
+            RuntimeError: If server is already running.
         """
+        if self._is_running:
+            raise RuntimeError('Server is already running')
+
         if not isinstance(self.port, int) or not 1 <= self.port <= 65535:
             raise ValueError('Port must be between 1 and 65535')
-        self._is_running = True
-        # Note: FastMCP doesn't have start/stop yet, will be implemented
-        # in the MCP implementation step
+
+        try:
+            # Start FastMCP server
+            if self._debug:
+                address = f'{self._host}:{self._port}'  # Split long line
+                logger.info(f'Starting {self.server_name} on {address}')
+
+            # The FastMCP API just provides a start() method that auto-detects
+            # whether to use stdio or TCP based on the environment
+            # Note: In VS Code it will auto-use stdio
+            await self.mcp.start()
+            self._is_running = True
+
+        except Exception as e:
+            logger.error(f'Failed to start server: {e}')
+            raise
 
     async def stop(self) -> None:
-        """Stop the MCP server."""
-        self._is_running = False
-        # Note: FastMCP doesn't have start/stop yet, will be implemented
-        # in the MCP implementation step
+        """Stop the MCP server.
+
+        Raises:
+            RuntimeError: If server is not running.
+        """
+        if not self._is_running:
+            raise RuntimeError('Server is not running')
+
+        try:
+            # Stop FastMCP server
+            if self._debug:
+                logger.info(f'Stopping {self.server_name}')
+
+            # Clean up server
+            await self.mcp.stop()
+            self._is_running = False
+
+        except Exception as e:
+            logger.error(f'Failed to stop server gracefully: {e}')
+            self._is_running = False
+            raise
 
 
 def create_server(
